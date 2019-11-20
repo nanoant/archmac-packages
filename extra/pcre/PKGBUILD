@@ -1,18 +1,24 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/packages.git/plain/trunk/PKGBUILD?h=packages/pcre
+
+# Maintainer: Sébastien "Seblu" Luttringer
+# Contributor: Allan McRae <allan@archlinux.org>
+# Contributor: Eric Belanger <eric@archlinux.org>
+# Contributor: John Proctor <jproctor@prium.net>
+
 pkgname=pcre
-pkgver=8.38
-pkgrel=1
+pkgver=8.43
+pkgrel=2
 pkgdesc='A library that implements Perl 5-style regular expressions'
 arch=('x86_64')
-url='http://www.pcre.org/'
+url='https://www.pcre.org/'
 license=('BSD')
 #depends=('gcc-libs' 'readline' 'zlib' 'bzip2' 'bash')
 depends=('bash')
 validpgpkeys=('45F68D54BBE23FB3039B46E59766E084FB0F43D8') # Philip Hazel
-source=("ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/$pkgname-$pkgver.tar.bz2"{,.sig}
-        '01-CVE-2016-1283.patch')
-md5sums=('00aabbfe56d5a48b270f999b508c5ad2'
-         'SKIP'
-         '722aba6455a3f0240eaa22289f0176a0')
+source=("https://ftp.pcre.org/pub/pcre/$pkgname-$pkgver.tar.bz2"{,.sig})
+md5sums=('636222e79e392c3d95dcc545f24f98c4'
+         'SKIP')
 
 prepare() {
   cd $pkgname-$pkgver
@@ -20,8 +26,8 @@ prepare() {
   local filename
   for filename in "${source[@]}"; do
     if [[ "$filename" =~ \.patch$ ]]; then
-      msg2 "Applying patch $filename"
-      patch -p1 -N -i "$srcdir/$filename"
+      msg2 "Applying patch ${filename##*/}"
+      patch -p1 -N -i "$srcdir/${filename##*/}"
     fi
   done
   :
@@ -53,3 +59,5 @@ package() {
   install -d mm755 "$pkgdir/opt/arch/share/licenses/$pkgname"
   install -m644 LICENCE "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
 }
+
+# vim:set ts=2 sw=2 et:
