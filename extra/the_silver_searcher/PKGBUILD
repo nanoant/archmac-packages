@@ -1,23 +1,33 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/the_silver_searcher
+
+# Maintainer: Alexander F. Rødseth <xyproto@archlinux.org>
+# Contributor: Jeff Horelick <jdhore1@gmail.com>
+# Contributor: skydrome <skydrome@i2pmail.org>
+
 pkgname=the_silver_searcher
-pkgver=0.31.0
+pkgver=2.2.0
 pkgrel=1
 pkgdesc='Code searching tool similar to Ack, but faster'
+arch=('x86_64')
 url='https://github.com/ggreer/the_silver_searcher'
 license=('Apache')
 depends=('pcre' 'xz')
 makedepends=('git')
-arch=('x86_64')
-source=("git://github.com/ggreer/$pkgname.git#tag=$pkgver")
+source=("git+https://github.com/ggreer/$pkgname.git#tag=$pkgver")
 md5sums=('SKIP')
 
 prepare() {
-  sed -i -e 's:configure:configure --prefix=/opt/arch:' "$pkgname/build.sh"
+  sed -i -e 's,configure,configure --prefix=/opt/arch,' "$pkgname/build.sh"
 }
 
 build() {
-  "./$pkgname/build.sh"
+  ./$pkgname/build.sh
 }
 
 package() {
-  make -C "$pkgname" DESTDIR="$pkgdir" install
+  make -C $pkgname DESTDIR="$pkgdir" install
 }
+
+# getver: github.com/ggreer/the_silver_searcher
+# vim: ts=2 sw=2 et:
