@@ -1,0 +1,14 @@
+diff --git a/glib/tests/gdatetime.c b/glib/tests/gdatetime.c.new
+index 5a2190d..3a58337 100644
+--- a/glib/tests/gdatetime.c
++++ b/glib/tests/gdatetime.c.new
+@@ -1442,8 +1442,8 @@ test_non_utf8_printf (void)
+   TEST_PRINTF ("%A", "\345\234\237\346\233\234\346\227\245");
+ #ifndef __APPLE__ /* OSX just returns the number */
+   TEST_PRINTF ("%b", "10\346\234\210");
+-#endif
+   TEST_PRINTF ("%B", "10\346\234\210");
++#endif
+   TEST_PRINTF ("%d", "24");
+   TEST_PRINTF_DATE (2009, 1, 1, "%d", "01");
+   TEST_PRINTF ("%e", "24"); // fixme

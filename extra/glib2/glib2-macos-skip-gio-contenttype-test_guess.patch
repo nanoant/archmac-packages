@@ -1,0 +1,20 @@
+diff --git a/gio/tests/contenttype.c b/gio/tests/contenttype.c.new
+index 2424b8e..f50cece 100644
+--- a/gio/tests/contenttype.c
++++ b/gio/tests/contenttype.c.new
+@@ -110,7 +110,6 @@ test_guess (void)
+   g_assert (!uncertain);
+   g_free (res);
+   g_free (expected);
+-#endif
+ 
+   res = g_content_type_guess (NULL, (guchar *)"%!PS-Adobe-2.0 EPSF-1.2", 23, &uncertain);
+   expected = g_content_type_from_mime_type ("image/x-eps");
+@@ -118,6 +117,7 @@ test_guess (void)
+   g_assert (!uncertain);
+   g_free (res);
+   g_free (expected);
++#endif
+ }
+ 
+ static void

@@ -1,0 +1,20 @@
+diff --git a/glib/tests/gdatetime.c b/glib/tests/gdatetime.c.new
+index 3a58337..5b788de 100644
+--- a/glib/tests/gdatetime.c
++++ b/glib/tests/gdatetime.c.new
+@@ -1989,6 +1989,7 @@ test_strftime (void)
+ static void
+ test_GDateTime_strftime_error_handling (void)
+ {
++#ifndef __APPLE__
+   gchar *oldlocale;
+ 
+   oldlocale = g_strdup (setlocale (LC_ALL, NULL));
+@@ -2003,6 +2004,7 @@ test_GDateTime_strftime_error_handling (void)
+     g_test_skip ("locale de_DE not available, skipping error handling tests");
+   setlocale (LC_ALL, oldlocale);
+   g_free (oldlocale);
++#endif
+ }
+ 
+ static void
