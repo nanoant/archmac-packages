@@ -1,0 +1,43 @@
+# Ported from:
+# - Arch Linux: https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/mc
+# - Homebrew: https://github.com/Homebrew/homebrew-core/blob/master/Formula/midnight-commander.rb
+
+# Maintainer: Alad Wenter <alad@archlinux.org>
+# Maintainer: schuay <jakob.gruber@gmail.com>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+
+pkgname=mc
+pkgver=4.8.22
+# pkgver=4.8.23 # NOTE: 4.8.23 fails on macOS with: duplicate symbol '_menu_map'
+pkgrel=1
+pkgdesc="A file manager that emulates Norton Commander"
+arch=('x86_64')
+url="https://midnight-commander.org/"
+license=('GPL')
+depends=('glib2' 'slang')
+#makedepends=('unzip')
+backup=('opt/arch/etc/mc/edit.indent.rc'
+        'opt/arch/etc/mc/filehighlight.ini'
+        'opt/arch/etc/mc/mc.ext'
+        'opt/arch/etc/mc/mc.keymap'
+        'opt/arch/etc/mc/mc.menu'
+        'opt/arch/etc/mc/mcedit.menu'
+        'opt/arch/etc/mc/sfs.ini')
+options=('!emptydirs')
+source=(http://ftp.midnight-commander.org/${pkgname}-${pkgver}.tar.xz)
+sha256sums=('ee7868d7ba0498cf2cccefe107d7efee7f2571098806bba2aed5a159db801318')
+# sha256sums=('dd7f7ce74183307b0df25b5c3e60ad3293fd3d3d27d2f37dd7a10efce13dff1c') # 4.8.23
+
+build() {
+  cd ${pkgname}-${pkgver}
+  ./configure \
+      --prefix=/opt/arch \
+      --without-x \
+      --with-screen=slang
+  make
+}
+
+package() {
+  cd ${pkgname}-${pkgver}
+  make DESTDIR="${pkgdir}" install
+}
