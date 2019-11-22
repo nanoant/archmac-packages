@@ -8,9 +8,9 @@ license=('GPL')
 groups=('base' 'base-devel')
 #depends=('bash' 'glibc' 'libarchive' 'curl'
 #         'gpgme' 'pacman-mirrorlist' 'archlinux-keyring')
-depends=('bash' 'libarchive' 'gnupg' 'pacman-mirrorlist')
+depends=('bash' 'libarchive' 'gnupg' 'pacman-mirrorlist' 'openssl')
 makedepends=('asciidoc')   # roundup patch alters docs
-checkdepends=('python2' 'fakechroot')
+checkdepends=('python2' 'fakeroot')
 provides=('pacman-contrib')
 conflicts=('pacman-contrib')
 replaces=('pacman-contrib')
@@ -64,8 +64,8 @@ build() {
   export LIBARCHIVE_LIBS="-larchive"
   export LIBCURL_CFLAGS="-I/usr/include/curl"
   export LIBCURL_LIBS="-lcurl"
-  #export LIBSSL_CFLAGS="-I${bootstrap_dir/include"
-  #export LIBSSL_LIBS="-lssl"
+  export LIBSSL_CFLAGS="-I/opt/arch/include"
+  export LIBSSL_LIBS="-lssl -lcrypto"
   export BASH_SHELL=/opt/arch/bin/bash
 
   ./configure --prefix=/opt/arch --sysconfdir=/opt/arch/etc \
