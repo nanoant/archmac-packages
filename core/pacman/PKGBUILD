@@ -1,6 +1,6 @@
 pkgname=pacman
 pkgver=5.1.2
-pkgrel=1
+pkgrel=2
 pkgdesc="A library-based package manager with dependency support"
 arch=('i686' 'x86_64')
 url="http://www.archlinux.org/pacman/"
@@ -25,6 +25,7 @@ source=(
   pacman-lazy-chroot.patch
   pacman-no-ro-check.patch
   pacman-macos-signals.patch
+  pacman-macos-touch-epoch-compat.patch
   makepkg-chmod.patch
   pacman.conf.x86_64
   makepkg.conf
@@ -38,6 +39,7 @@ sha256sums=(
   '261468877f7b7cdfa597c34f66ea8f12adde6d37e76b8c5019f13b4fe82c6f3d'
   'a4bfddc1c32effb86d77412a323e1468869c235f332d24f0c1fc46a99ca0629b'
   'a41c1b7a9ab8288bb734567602d35684e207d55e9e672a36ae8449f81f2e13ad'
+  '888f85eee1ed46799df1766d5b5e7c3dab5664e96b9b7506bde6a10f13f6f64d'
   'ec46e453d67c5d0eceae60f3dccb904576d0f0552bb75adbed21f37e0a215040'
   '42c190510e576734365ed55271ddcf616845555f406c3d7a03c8a548ac9af12e'
   '3b380092065991eea4d1f95affee93c88ca8cf55315c4f596a1ff43d4ba165de'
@@ -55,6 +57,7 @@ prepare() {
   patch -p0 < ../makepkg-chmod.patch
   patch -p0 < ../pacman-no-ro-check.patch
   patch -p0 < ../pacman-macos-signals.patch
+  patch -p0 < ../pacman-macos-touch-epoch-compat.patch
 }
 
 build() {
