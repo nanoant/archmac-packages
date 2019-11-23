@@ -2,54 +2,33 @@
 # https://git.archlinux.org/svntogit/packages.git/tree/trunk/PKGBUILD?h=packages/glib2
 
 pkgname=glib2
-pkgver=2.56.4 # NOTE: This is last version using autotools instead of meson
+pkgver=2.62.3
 pkgrel=1
 pkgdesc='Low level core library'
 url='https://wiki.gnome.org/Projects/GLib'
 license=('LGPL2.1')
 arch=('x86_64')
 depends=('pcre' 'libffi>=3.0.0' 'zlib>=1.2.10') # NOTE: We need version for libffi and zlib, otherwise pacman does not pull them.
-makedepends=('gettext' 'pkg-config')
-source=(
-  https://download.gnome.org/sources/glib/${pkgver%.*}/glib-$pkgver.tar.xz
-  glib2-macos-skip-test_non_utf8_printf.patch # related to: https://gitlab.gnome.org/GNOME/glib/issues/1357
-  glib2-macos-skip-test_GDateTime_strftime_error_handling.patch
-  glib2-macos-skip-gio-contenttype-test_guess.patch
-)
-sha256sums=(
-  '27f703d125efb07f8a743666b580df0b4095c59fc8750e8890132c91d437504c'
-  '17804d39223e3ef1662ba49bca7e343cee05603505406148cfeb40a2a1777db6'
-  '07c8c484229aec00a2134e7dc3f00bacd96b0320c3e3a165c48aff86236bd630'
-  '32e2830f50307a1f2a722b6eabf63f6ef8ebb4e795b85c3445b2be95ae6cefd7'
-)
-
-prepare() {
-  cd glib-$pkgver
-  # Fixed for macOS tests, this is WIP
-  patch -p1 < ../glib2-macos-skip-test_non_utf8_printf.patch
-  patch -p1 < ../glib2-macos-skip-test_GDateTime_strftime_error_handling.patch
-  patch -p1 < ../glib2-macos-skip-gio-contenttype-test_guess.patch
-}
+makedepends=('gettext' 'meson' 'ninja' 'pkg-config' 'docbook-xsl')
+source=(https://download.gnome.org/sources/glib/${pkgver%.*}/glib-$pkgver.tar.xz)
+sha256sums=('4400adc9f0d3ffcfe8e84225210370ce3f9853afb81812ddadb685325aa655c4')
 
 build() {
-  cd glib-$pkgver
-  ./configure \
-    --prefix=/opt/arch \
-    --with-pcre=system \
-    --disable-gtk-doc-html \
-    --disable-fam \
-    CPPFLAGS=-I/opt/arch/include \
-    LDFLAGS=-L/opt/arch/lib
-  make
+  export XML_CATALOG_FILES=/opt/arch/etc/xml/catalog
+  CPPFLAGS=-I/opt/arch/include \
+  LDFLAGS=-L/opt/arch/lib \
+  meson glib-$pkgver build \
+    -D prefix=/opt/arch \
+    -D man=true \
+    -D gtk_doc=false
+  ninja -C build
 }
 
 check() {
-  cd glib-$pkgver
-  # SKIP: some test fail on macOS. Homebrew also skips checking.
-  # make check
+  # Some tests currently still fail on macOS, so disabling for now.
+  # meson test -C build --no-suite flaky --print-errorlogs
 }
 
 package() {
-  cd glib-$pkgver
-  make DESTDIR="$pkgdir" install
+  DESTDIR="$pkgdir" meson install -C build
 }
