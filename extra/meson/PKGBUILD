@@ -1,0 +1,45 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/packages.git/plain/trunk/PKGBUILD?h=packages/meson
+
+# Maintainer: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+# Contributor: Anatol Pomozov <anatol dot pomozov at gmail>
+
+pkgname=meson
+pkgver=0.52.0
+pkgrel=1
+pkgdesc='High productivity build system'
+url='https://mesonbuild.com/'
+arch=('any')
+license=('Apache')
+depends=('python3' 'ninja')
+makedepends=('python3-setuptools')
+source=(https://github.com/mesonbuild/meson/releases/download/${pkgver}/meson-${pkgver}.tar.gz{,.asc})
+sha512sums=('9efe962c60e21bf4159ce0b113caba0119751a5f6217cd116f6e43b0b4150af0eb7ab484a74d8e9438d78a5d0458dda4215e9b6b9c96bfc0d07e23d709d2929f'
+            'SKIP')
+validpgpkeys=('95181F4EED14FDF4E41B518D3BF4693BFEEB9428') # Jussi Pakkanen <jpakkane@gmail.com>
+prefix=/opt/arch
+
+build() {
+  cd ${pkgname}-${pkgver}
+  python3 setup.py build
+}
+
+check() (
+  cd ${pkgname}-${pkgver}
+  export LC_CTYPE=en_US.UTF-8 CPPFLAGS= CFLAGS= CXXFLAGS= LDFLAGS=
+  ./run_tests.py
+)
+
+package() {
+  cd ${pkgname}-${pkgver}
+  python3 setup.py install --prefix="${prefix}" --root="${pkgdir}" --optimize=1 --skip-build
+
+  install -d -m755                               "${pkgdir}/${prefix}/share/emacs/site-lisp"
+  install -m644 data/syntax-highlighting/emacs/* "${pkgdir}/${prefix}/share/emacs/site-lisp"
+  install -m644 data/syntax-highlighting/emacs/* "${pkgdir}/${prefix}/share/emacs/site-lisp"
+  install -d -m755                               "${pkgdir}/${prefix}/share/zsh/site-functions"
+  install -m644 data/shell-completions/zsh/*     "${pkgdir}/${prefix}/share/zsh/site-functions"
+}
+
+# vim: ts=2 sw=2 et:
