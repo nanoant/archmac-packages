@@ -1,35 +1,31 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/packages.git/plain/trunk/PKGBUILD?h=packages/python-pyparsing
+
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Alexander F Rødseth <xyproto@archlinux.org>
+# Contributor: Chris Brannon <cmbrannon79@gmail.com>
+# Contributor: Geoffroy Carrier <geoffroy.carrier@aur.archlinux.org>
+# Contributor: Arvid Ephraim Picciani <aep@exys.org>
+# Contributor: Michael Krauss <hippodriver@gmx.net>
+
 pkgname=python3-pyparsing
 pkgname=('python3-pyparsing')
-pkgver=2.1.1
+pkgver=2.4.5
 pkgrel=1
 pkgdesc='General parsing module for Python'
 arch=('any')
 url='http://pyparsing.wikispaces.com/'
 makedepends=('python3-setuptools')
 license=('MIT')
-source=("http://downloads.sourceforge.net/pyparsing/pyparsing-$pkgver.tar.gz")
-sha256sums=('9bae5cd4cbee6da0d7d8d9a1647f5253a3b89652e707647eaf1961f4932ae6c6')
-
-#prepare() {
-#  cp -r "pyparsing-$pkgver" py2
-#}
+source=("https://github.com/pyparsing/pyparsing/archive/pyparsing_$pkgver.tar.gz")
+sha512sums=('156cfdd28b4eadd5a29abfec8818fe4d038b220cf27aaa9d499f68ec87867c9048dfa79fd6efd85e940d47a7e7fcb21b93d527be05d27a5b58e2900fffb6b132')
 
 package_python3-pyparsing() {
   depends=('python3')
-  cd "pyparsing-$pkgver"
+  cd "$srcdir/pyparsing-pyparsing_$pkgver"
 
   rm -rf build
   python3 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1
   install -dm755 "$pkgdir/opt/arch/share/licenses/$pkgname"
   install -m644 LICENSE "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
 }
-
-#package_python2-pyparsing() {
-#  depends=('python2')
-#  cd py2
-#
-#  rm -rf build
-#  python2 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1
-#  install -dm755 "$pkgdir/opt/arch/share/licenses/$pkgname"
-#  install -m644 LICENSE "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
-#}
