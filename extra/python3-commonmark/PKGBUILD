@@ -1,0 +1,47 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-commonmark
+
+# Maintainer: Levente Polyak <anthraxx[at]archlinux[dot]org>
+
+pkgname=python3-commonmark
+pkgver=0.9.1
+pkgrel=1
+pkgdesc='Python parser for the CommonMark Markdown spec'
+url='https://pypi.org/project/commonmark/'
+arch=('any')
+license=('BSD')
+depends=('python3-docutils') # 'python-future'
+makedepends=('python3-setuptools' 'python3-sphinx') # 'python3-sphinx_rtd_theme'
+# checkdepends=('python3-hypothesis')
+options=('!makeflags')
+source=(${pkgname}-${pkgver}.tar.gz::https://github.com/readthedocs/commonmark.py/archive/${pkgver}.tar.gz)
+sha256sums=('b5d5be6af35a183c3f915d714b31b61e6918894051114419f9ac0bbb715bf4c6')
+sha512sums=('a6de0b384247ff79fe326012bd1fc71135e6ae5bc7b6a15d5402969a94f81fdd802f1a9d557c504eb74bfb3fea68f55355a70a6e0112a620cc285cf9039892e4')
+
+build() {
+  cd commonmark.py-${pkgver}
+  python3 setup.py build
+  # FIXME: Missing python3-sphinx_rtd_theme
+  # make -C docs man text SPHINXBUILD=sphinx-build
+}
+
+check() {
+  cd commonmark.py-${pkgver}
+  export PYTHONPATH=.
+  # FIXME: Missing dependencies, skipping:
+  # python commonmark/tests/unit_tests.py
+  # python setup.py test
+}
+
+package() {
+  cd commonmark.py-${pkgver}
+  python3 setup.py install --prefix=/opt/arch --root="${pkgdir}" -O1 --skip-build
+  # install -Dm 644 README.rst CHANGELOG.md -t "${pkgdir}/opt/arch/share/doc/${pkgname}"
+  install -dm755        "${pkgdir}/opt/arch/share/licenses/${pkgname}"
+  install -m644 LICENSE "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE"
+  # install -Dm 644 docs/_build/text/* -t "${pkgdir}/opt/arch/share/doc/${pkgname}"
+  # install -Dm 644 docs/_build/man/commonmark-py.1 "${pkgdir}/opt/arch/share/man/man1/${pkgname}.1"
+  mv "${pkgdir}/opt/arch/bin/cmark"{,-py3}
+}
+
+# vim: ts=2 sw=2 et:
