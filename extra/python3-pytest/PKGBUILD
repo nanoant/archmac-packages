@@ -1,0 +1,51 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-pytest
+
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Felix Kaiser <felix.kaiser@fxkr.net>
+
+pkgname=python3-pytest
+pkgver=5.3.0
+pkgrel=1
+pkgdesc="Simple powerful testing with Python"
+arch=('any')
+license=('MIT')
+url="https://pytest.org/"
+depends=('python3-py' 'python3-setuptools' 'python3-pluggy' 'python3-attrs' 'python3-more-itertools'
+         'python3-wcwidth' 'python3-importlib-metadata')
+# checkdepends=('lsof' 'python-nose' 'python-mock' 'python-requests' 'python-hypothesis'
+#               'python-argcomplete' 'python-xmlschema'
+#               # Unlisted, but actually used. Check again after a while:
+#               'python-numpy' 'python-twisted' 'python-pytest-xdist' 'python-decorator'
+#               'python-jinja' 'python-pexpect')
+makedepends=('python3-setuptools-scm')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/pytest-dev/pytest/archive/$pkgver.tar.gz")
+sha512sums=('c82962b66c32b3001997ea5c788bef3e3c20756c19bff6953c8c20a4266ff7b39f7a1ae0e15d1359d6a4676ccbcca9a30ce95d4139e173035af83d4f17d1665a')
+
+export SETUPTOOLS_SCM_PRETEND_VERSION=$pkgver
+
+# prepare() {
+#   # Ignore warnings that break test
+#   sed -e 's|2 passed in|2 passed|' -i pytest-$pkgver/testing/test_pdb.py
+# }
+
+build() {
+  cd pytest-$pkgver
+  python3 setup.py build
+}
+
+check() {
+  # Skip test_collect_pyargs_with_testpaths because it mangles PYTHONPATH
+
+  cd pytest-$pkgver
+  # FIXME: Requires lot of extra dependencies, see above. Disabling for now:
+  # python3 setup.py egg_info
+  # PYTHONPATH="$PWD"/build/lib python3 src/pytest.py -k 'not test_collect_pyargs_with_testpaths'
+}
+
+package() {
+  cd pytest-$pkgver
+  python3 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1
+  install -dm755        "$pkgdir"/opt/arch/licenses/$pkgname
+  install -m644 LICENSE "$pkgdir"/opt/arch/licenses/$pkgname/LICENSE
+}

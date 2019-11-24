@@ -1,0 +1,33 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-webencodings
+
+# Maintainer: Jelle van der Waa <jelle@vdwaa.nl>
+# Contributor: Jelle van der Waa <jelle@vdwaa.nl>
+
+pkgname=python3-webencodings
+pkgver=0.5.1
+pkgrel=1
+pkgdesc="This is a Python implementation of the WHATWG Encoding standard."
+arch=('any')
+url="https://github.com/gsnedders/python-webencodings"
+license=('BSD')
+depends=('python3')
+makedepends=('python3' 'python3-setuptools')
+# checkdepends=('python3-nose')
+source=(https://github.com/gsnedders/python-webencodings/archive/v$pkgver.tar.gz)
+md5sums=('7eb67377743cd55eaa356496c439471e')
+
+package() {
+    cd ${srcdir}/python-webencodings-${pkgver}
+
+    python3 setup.py install --prefix=/opt/arch --root=${pkgdir}
+    install -dm755        "${pkgdir}/opt/arch/share/licenses/${pkgname}"
+    install -m644 LICENSE "${pkgdir}/opt/arch/share/licenses/${pkgname}/LICENSE"
+}
+
+check() {
+    cd ${srcdir}/python-webencodings-${pkgver}/webencodings
+
+    # FIXME: Additional dependency required, skipping:
+    # nosetests tests.py
+}

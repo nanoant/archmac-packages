@@ -1,0 +1,37 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-zipp
+
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+
+pkgname=python3-zipp
+pkgver=0.6.0
+pkgrel=1
+pkgdesc="Pathlib-compatible object wrapper for zip files"
+url="https://github.com/jaraco/zipp"
+license=('MIT')
+arch=('x86_64')
+depends=('python3-more-itertools')
+makedepends=('python3-setuptools-scm' 'python3-more-itertools')
+# checkdepends=('python3-pathlib2' 'python3-contextlib2' 'python3-unittest2')
+source=("$pkgname-$pkgver.tar.gz::https://github.com/jaraco/zipp/archive/v$pkgver.tar.gz")
+sha512sums=('9aef3b03a19d76cb72e1510d62a4edd536cbb176a4593154d6f98ecf020438249307ee5f8205f29e7f121acd61c105ca79a1ed48c66c6ba8799e2dbb3eecd75e')
+
+export SETUPTOOLS_SCM_PRETEND_VERSION=$pkgver
+
+build() {
+  cd zipp-$pkgver
+  python3 setup.py build
+}
+
+check() {
+  cd zipp-$pkgver
+  # FIXME: Depends on extra unimplemented dependencies, so disabling for now:
+  # python3 setup.py test
+}
+
+package() {
+  cd zipp-$pkgver
+  python3 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1
+  install -dm755        "$pkgdir"/opt/arch/share/licenses/$pkgname
+  install -m644 LICENSE "$pkgdir"/opt/arch/share/licenses/$pkgname/LICENSE
+}

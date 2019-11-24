@@ -1,0 +1,31 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-certifi
+
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
+# Contributor: William J Bowman <bluephoenix47@gmail.com>
+
+pkgname=python3-certifi
+_libname=${pkgname/python3-/}
+pkgver=2019.9.11
+pkgrel=1
+pkgdesc="Python package for providing Mozilla's CA Bundle"
+arch=(any)
+url="https://pypi.python.org/pypi/certifi"
+license=('GPL')
+depends=('python3')
+makedepends=('python3-setuptools')
+source=("https://pypi.io/packages/source/${_libname:0:1}/$_libname/$_libname-$pkgver.tar.gz")
+sha512sums=('aab5734bf65cbad12772bb120153b0325a5c3226339e0a03fdf4c3413303feb930b6d53d1d9dab93bd4f3cf00d2bfbe86419c4c462570340f1a4aa143a31373c')
+
+build() {
+  cd "$srcdir/$_libname-$pkgver"
+  python3 setup.py build
+}
+
+package() {
+  cd "$srcdir/$_libname-$pkgver"
+  python3 setup.py install --prefix=/opt/arch --skip-build -O1 --root="$pkgdir"
+  install -dm755          "$pkgdir/opt/arch/share/licenses/$pkgname"
+  install -m644 "LICENSE" "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE"
+}

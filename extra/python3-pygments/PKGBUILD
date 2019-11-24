@@ -1,0 +1,31 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-pygments
+
+# Maintainer: Evangelos Foutras <evangelos@foutrelis.com>
+# Contributor: Timm Preetz <timm@preetz.us>
+
+pkgname=python3-pygments
+pkgver=2.4.2
+pkgrel=1
+pkgdesc="Python syntax highlighter"
+arch=('any')
+url="http://pygments.org/"
+license=('BSD')
+depends=('python3-setuptools')
+options=('!emptydirs')
+source=(https://pypi.org/packages/source/P/Pygments/Pygments-$pkgver.tar.gz)
+sha256sums=('881c4c157e45f30af185c1ffe8d549d48ac9127433f2c380c24b84572ad66297')
+
+package() {
+  cd "$srcdir/Pygments-$pkgver"
+
+  python3 setup.py install --prefix=/opt/arch --root="$pkgdir" -O1
+
+  # pygmentize is shipped in its own package
+  rm "$pkgdir/opt/arch/bin/pygmentize"
+
+  install -dm755        "$pkgdir/opt/arch/licenses/$pkgname"
+  install -m644 LICENSE "$pkgdir/opt/arch/licenses/$pkgname/LICENSE"
+}
+
+# vim:set ts=2 sw=2 et:

@@ -1,0 +1,33 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-sphinx-alabaster-theme
+
+# Maintainer: Johannes Löthberg <johannes@kyriasis.com>
+# Contributor: xantares
+
+pkgname=python3-sphinx-alabaster-theme
+pkgver=0.7.12
+pkgrel=1
+
+pkgdesc="Sphinx default theme"
+url='https://github.com/bitprophet/alabaster'
+arch=('any')
+license=('custom:BSD')
+
+makedepends=('python3-setuptools')
+
+source=("https://pypi.org/packages/source/a/alabaster/alabaster-$pkgver.tar.gz")
+
+md5sums=('3591827fde96d1dd23970fb05410ed04')
+
+build() {
+	cd alabaster-"$pkgver"
+	python3 setup.py build
+}
+
+package() {
+	cd alabaster-"$pkgver"
+	python3 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1
+
+	install -dm755        "$pkgdir"/opt/arch/share/licenses/"$pkgname"
+	install -m644 LICENSE "$pkgdir"/opt/arch/share/licenses/"$pkgname"/LICENSE
+}

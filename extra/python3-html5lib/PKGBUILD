@@ -1,0 +1,44 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-html5lib
+
+# Maintainer: Eli Schwartz <eschwartz@archlinux.org>
+# Maintainer: Jelle van der Waa <jelle@archlinux.org>
+# Contributor: Daniel J Griffiths <ghost1227@archlinux.us>
+# Contributor: Erol V. Aktay <e.aktay@gmail.com>
+
+pkgname=python3-html5lib
+pkgver=1.0.1
+pkgrel=1
+pkgdesc="A Python HTML parser/tokenizer based on the WHATWG HTML5 spec"
+arch=('any')
+url="https://github.com/html5lib"
+license=('MIT')
+_deps=('six' 'webencodings')
+depends=("${_deps[@]/#/python3-}")
+makedepends=('python3-setuptools')
+# _checkdeps=('pytest' 'pytest-expect' 'lxml' 'mock')
+# checkdepends=("${_checkdeps[@]/#/python-}" "${_checkdeps[@]/#/python2-}")
+_test_commit=c305da74fae50fb018870de7a042da36c1a93b65
+source=("$pkgname-$pkgver.tar.gz::https://github.com/html5lib/html5lib-python/archive/${pkgver}.tar.gz")
+sha256sums=('fabbebd6a55d07842087f13849076eeed350aa8bb6c9ec840f6a6aba9388db06')
+
+build() {
+    cd "${srcdir}"/html5lib-python-${pkgver}
+
+    python3 setup.py build
+}
+
+check() {
+    cd "${srcdir}"/html5lib-python-${pkgver}
+
+    # FIXME: Additional dependencies required, disabling for now:
+    # py.test
+}
+
+package() {
+    cd "${srcdir}"/html5lib-python-${pkgver}
+
+    python3 setup.py install --prefix=/opt/arch --root="${pkgdir}" --optimize=1 --skip-build
+    install -dm755        "${pkgdir}"/opt/arch/share/licenses/${pkgname}
+    install -m644 LICENSE "${pkgdir}"/opt/arch/share/licenses/${pkgname}/LICENSE
+}

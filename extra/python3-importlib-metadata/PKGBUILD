@@ -1,0 +1,34 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-importlib-metadata
+
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+
+pkgname=python3-importlib-metadata
+pkgver=0.23
+pkgrel=1
+pkgdesc="Read metadata from Python packages"
+url="https://importlib-metadata.readthedocs.io"
+license=('Apache')
+arch=('any')
+depends=('python3-zipp')
+makedepends=('python3-setuptools-scm')
+checkdepends=('python3-pytest-runner')
+source=("$pkgname-$pkgver.tar.gz::https://gitlab.com/python-devs/importlib_metadata/-/archive/$pkgver/importlib_metadata-$pkgver.tar.bz2")
+sha512sums=('5158b57d3cba45a7d64abac72722cb40fe65af61002ecdfa2028c8fbf40f32b65e6a477d520a62bf7cfafcaf512f7b7b799ee4e6755c3bd1c5bc2614132a4ebf')
+
+export SETUPTOOLS_SCM_PRETEND_VERSION=$pkgver
+
+build() {
+  cd "$srcdir"/importlib_metadata-$pkgver
+  python3 setup.py build
+}
+
+check() {
+  cd "$srcdir"/importlib_metadata-$pkgver
+  python3 setup.py pytest
+}
+
+package() {
+  cd importlib_metadata-$pkgver
+  python3 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1
+}

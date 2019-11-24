@@ -1,0 +1,37 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/packages.git/plain/trunk/PKGBUILD?h=packages/python-idna
+
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+
+pkgname=python3-idna
+pkgver=2.8
+pkgrel=1
+pkgdesc="Internationalized Domain Names in Applications (IDNA)"
+arch=('any')
+license=('BSD')
+url="https://github.com/kjd/idna"
+depends=('python3')
+makedepends=('python3-setuptools')
+source=("https://pypi.io/packages/source/i/idna/idna-$pkgver.tar.gz")
+sha512sums=('8ca5cfe6350c51250bafdac7c6e4ddd54c4a5d6bf7acbcef896760a759868c8e9df1fdf550121d8512fa3eb316dcf031ec6058e03b4f66eadee21b63e2187d33')
+
+prepare() {
+   rm -r idna-$pkgver/*.egg-info
+}
+
+build() {
+   cd "$srcdir"/idna-$pkgver
+   python3 setup.py build
+}
+
+check() {
+   cd "$srcdir"/idna-$pkgver
+   python3 setup.py test
+}
+ 
+package() {
+   cd idna-$pkgver
+   python3 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1 --skip-build
+   install -dm755            "$pkgdir"/opt/arch/share/licenses/$pkgname
+   install -m644 LICENSE.rst "$pkgdir"/opt/arch/share/licenses/$pkgname/LICENSE.rst
+}

@@ -1,0 +1,44 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-jinja
+
+# Maintainer: Evangelos Foutras <evangelos@foutrelis.com>
+# Contributor: David Runge <dave@sleepmap.de>
+# Contributor: Peter Baldwin <bald_pete@hotmail.com>
+
+pkgname=python3-jinja
+pkgver=2.10.3
+pkgrel=1
+pkgdesc="A simple pythonic template language written in Python"
+arch=('any')
+url="https://palletsprojects.com/p/jinja/"
+license=('BSD')
+depends=('python3-setuptools' 'python3-markupsafe')
+makedepends=('python3-setuptools' 'python3-markupsafe')
+checkdepends=('python3-pytest')
+source=(https://files.pythonhosted.org/packages/source/J/Jinja2/Jinja2-$pkgver.tar.gz)
+sha256sums=('9fe95f19286cfefaa917656583d020be14e7859c6b0252588391e47db34527de')
+
+build() {
+  cd Jinja2-$pkgver
+  python3 setup.py build
+}
+
+check() {
+  cd Jinja2-$pkgver
+  export PYTHONPATH=build:$PYTHONPATH
+  py.test
+}
+
+package() {
+  cd Jinja2-$pkgver
+  python3 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1 --skip-build
+  install -dm755            "$pkgdir/opt/arch/share/licenses/$pkgname"
+  install -m644 LICENSE.rst "$pkgdir/opt/arch/share/licenses/$pkgname/LICENSE.rst"
+
+  install -dm755                  "$pkgdir/opt/arch/share/vim/vimfiles/syntax/ext/Vim"
+  install -m644 ext/Vim/jinja.vim "$pkgdir/opt/arch/share/vim/vimfiles/syntax/ext/Vim/jinja.vim"
+  install -dm755                  "$pkgdir/opt/arch/share/emacs/site-lisp/ext"
+  install -m644 ext/jinja.el      "$pkgdir/opt/arch/share/emacs/site-lisp/ext/jinja.el"
+}
+
+# vim:set ts=2 sw=2 et:

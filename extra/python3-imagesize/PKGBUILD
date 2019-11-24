@@ -1,0 +1,28 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-imagesize
+
+pkgname=python3-imagesize
+pkgver=1.1.0
+pkgrel=1
+
+pkgdesc='Getting image size from png/jpeg/jpeg2000/gif file'
+url='https://github.com/shibukawa/imagesize_py'
+arch=('any')
+license=('MIT')
+
+depends=('python3')
+makedepends=('python3-setuptools')
+
+source=("https://files.pythonhosted.org/packages/source/i/imagesize/imagesize-$pkgver.tar.gz")
+
+md5sums=('2f89749b05e07c79c46330dbc62f1e02')
+
+build() {
+  cd "$srcdir"/imagesize-$pkgver
+  python3 setup.py build
+}
+
+package() {
+  cd imagesize-$pkgver
+  python3 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1
+}

@@ -1,0 +1,35 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/packages.git/plain/trunk/PKGBUILD?h=packages/python-attrs
+
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+
+pkgname=python3-attrs
+pkgver=19.3.0
+pkgrel=1
+pkgdesc="Attributes without boilerplate."
+arch=('any')
+license=('MIT')
+url="https://attrs.readthedocs.org/"
+depends=('python3')
+makedepends=('python3-setuptools')
+checkdepends=('python3-pytest-runner')
+source=("https://pypi.io/packages/source/a/attrs/attrs-$pkgver.tar.gz")
+sha512sums=('b5b641e6732156d1454ed6c49e3a6b29200a8d3f1515fb59aeb85fcb5e9ab6a1d760904de45083cae5250e7bf1a7aa2c1f3ede217240a63f989ae4bb484f2511')
+
+build() {
+  cd "$srcdir"/attrs-$pkgver
+  python3 setup.py build
+}
+
+check() {
+  cd "$srcdir"/attrs-$pkgver
+  # FIXME: Disable for now as it requires extra 'python3-hyphotesis':
+  # python3 setup.py pytest
+}
+
+package() {
+  cd attrs-$pkgver
+  python3 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1 --skip-build
+  install -dm755        "$pkgdir/opt/arch/licenses/$pkgname"
+  install -m644 LICENSE "$pkgdir/opt/arch/licenses/$pkgname/LICENSE"
+}

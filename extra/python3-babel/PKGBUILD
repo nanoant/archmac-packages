@@ -1,0 +1,46 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-babel
+
+# Maintainer: Morten Linderud <foxboron@archlinux.no>
+# Maintainer: Sergej Pupykin <pupykin.s+arch@gmail.com>
+# Contributor : Giedrius Slavinskas <giedrius25@gmail.com>
+
+pkgname=python3-babel
+pkgver=2.7.0
+_core=35.1
+pkgrel=1
+pkgdesc="A collection of tools for internationalizing Python applications"
+url="http://babel.pocoo.org/"
+license=("BSD")
+arch=('any')
+depends=('python3' 'python3-pytz')
+makedepends=('python3-setuptools' 'python3-pytest')
+checkdepends=('python3-pytest' 'python3-pytest-runner')
+noextract=("cldr-core-$_core.zip")
+source=("$pkgname-$pkgver.tar.gz::https://github.com/python-babel/babel/archive/v$pkgver.tar.gz"
+        "cldr-core-$_core.zip::http://unicode.org/Public/cldr/$_core/core.zip")
+sha256sums=('d31a563d7b573f2544d49fecc22b58d470a624ebb63fe41583502095e266c462'
+            'e2ede8cb8f9c29157e281ee9e696ce540a72c598841bed595a406b710eea87b0')
+
+prepare() {
+  cp "$srcdir"/cldr-core-$_core.zip babel-$pkgver/cldr/cldr-core-$_core.zip
+}
+
+build(){
+  cd "$srcdir/babel-$pkgver"
+  python3 setup.py import_cldr
+  python3 setup.py build
+}
+
+check(){
+  cd "$srcdir/babel-$pkgver"
+  # FIXME: Disabling as this requires 'python3-freezegun':
+  # python3 setup.py pytest
+}
+
+package() {
+  cd "$srcdir"/babel-${pkgver}
+  python3 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1 --skip-build
+  install -dm755         "$pkgdir"/opt/arch/share/licenses/$pkgname
+  install -m644  LICENSE "$pkgdir"/opt/arch/share/licenses/$pkgname/LICENSE
+}

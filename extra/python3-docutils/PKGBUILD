@@ -1,0 +1,45 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/docutils
+
+# Maintainer: Sébastien Luttringer
+# Contributor : Ionut Biru <ibiru@archlinux.org>
+# Contributor: Sergej Pupykin <pupykin.s+arch@gmail.com>
+
+pkgname=python3-docutils
+pkgver=0.14
+pkgrel=1
+pkgdesc='Set of tools for processing plaintext docs into formats such as HTML, XML, or LaTeX'
+arch=('any')
+url='http://docutils.sourceforge.net'
+license=('custom')
+depends=('python3')
+source=("https://files.pythonhosted.org/packages/84/f4/5771e41fdf52aabebbadecc9381d11dea0fa34e4759b4071244fa094804c/docutils-$pkgver.tar.gz")
+md5sums=('c53768d63db3873b7d452833553469de')
+
+build() {
+  cd docutils-$pkgver
+  python3 setup.py build --build-lib=build/python
+  find build/python -type f -exec \
+    sed -i '1s,^#! \?/usr/bin/\(env \|\)python$,#!/opt/arch/bin/python3,' {} \;
+}
+
+check() {
+  cd docutils-$pkgver
+  # we need utf locale to valid utf8 tests
+  export LANG=en_US.UTF-8
+  # Disable python3 check
+  #PYTHONPATH="$PWD/build/python/" python3 test3/alltests.py
+}
+
+package() {
+  cd docutils-$pkgver
+  python3 setup.py build --build-lib=build/python \
+                   install --prefix=/opt/arch --root="$pkgdir" --optimize=1
+  # symlink without .py
+  for f in "$pkgdir"/opt/arch/bin/*.py; do
+      ln -s "$(basename $f)" "$pkgdir/opt/arch/bin/$(basename $f .py)"
+  done
+  # setup license
+  install -dm755            "$pkgdir/opt/arch/licenses/$pkgname"
+  install -m644 COPYING.txt "$pkgdir/opt/arch/licenses/$pkgname/COPYING.txt"
+}

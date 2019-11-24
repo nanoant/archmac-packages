@@ -1,0 +1,35 @@
+# Ported from Arch Linux:
+# https://git.archlinux.org/svntogit/community.git/plain/trunk/PKGBUILD?h=packages/python-snowballstemmer
+
+# Maintainer: Felix Yan <felixonmars@archlinux.org>
+# Contributor: xantares
+
+pkgname=python3-snowballstemmer
+pkgver=2.0.0
+pkgrel=1
+arch=('any')
+pkgdesc="Snowball stemming library collection for Python"
+url='https://snowballstem.org'
+license=('BSD')
+depends=('python3')
+makedepends=('python3-setuptools')
+source=("https://pypi.python.org/packages/source/s/snowballstemmer/snowballstemmer-$pkgver.tar.gz")
+md5sums=('c05ec4a897be3c953c8b8b844c4241d4')
+
+build() {
+  cd "$srcdir"/snowballstemmer-$pkgver
+  python3 setup.py build
+}
+
+check() {
+  cd "$srcdir"/snowballstemmer-$pkgver/src
+  PYTHONPATH=. python3 sample/testapp.py english "what's this"
+}
+
+package() {
+  cd "$srcdir"/snowballstemmer-$pkgver
+  python3 setup.py install --prefix=/opt/arch --root="$pkgdir" --optimize=1
+
+  install -dm755        "$pkgdir"/opt/arch/share/licenses/$pkgname
+  install -m644 COPYING "$pkgdir"/opt/arch/share/licenses/$pkgname/COPYING
+}
